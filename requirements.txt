@@ -1,0 +1,7 @@
+flask
+pandas
+finnhub-python
+bokeh
+python-dotenv
+flask-cors
+apscheduler
