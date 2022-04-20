@@ -1,8 +1,6 @@
 """Main Flask a´ file"""
-import time
 import os
 import atexit
-import pandas as pd
 import finnhub
 
 import pytz
@@ -10,20 +8,40 @@ import pytz
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, jsonify
-from bokeh.plotting import figure, output_file, save
+from bokeh.plotting import figure, output_file
 from bokeh.models import NumeralTickFormatter, DatetimeTickFormatter
 from apscheduler.schedulers.background import BackgroundScheduler
+from flask_cors import CORS
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 def get_stock():
     """Get stock candles data"""
     res = finnhub_client.stock_candles('AAPL', 'D', 1590988249, 1591852249)
-    dataframe = pd.DataFrame(res)
+
+    candlesticks = []
+    # print(len(res['t']))
+    for i in range(len(res['t'])):
+        date = datetime.fromtimestamp(res['t'][i]).strftime("%d-%m-%Y")
+
+        candlestick = {
+            'date': date,
+            'low': res['l'][i],
+            'high': res['h'][i],
+            'close': res['c'][i],
+            'open': res['o'][i]
+        }
+        candlesticks.append(candlestick)
+
+    return candlesticks
+    # dataframe = pd.DataFrame(res)
     # format unix timestamp to datatime
-    dataframe["t"] = pd.to_datetime(dataframe["t"], unit='s')
-    make_plot(dataframe)
+    # dataframe["t"] = pd.to_datetime(dataframe["t"], unit='s')
+    # return dataframe
+    # make_plot(dataframe)
 
 
 def make_plot(dataframe):
@@ -63,9 +81,13 @@ def make_plot(dataframe):
     plot.xaxis[0].formatter = DatetimeTickFormatter(months="%b %Y",
                                                     days="%b %d")
 
-    output_file("./templates/apple.html")
+    # return jsonify(json_item(plot, "myplot"))
 
-    save(plot)
+
+@app.route('/candlesticks')
+def candlesticks():
+    stocks = get_stock()
+    return jsonify(stocks)
 
 
 @app.route('/')
