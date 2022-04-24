@@ -1,94 +1,56 @@
-import React from "react";
-import Chart from "react-apexcharts";
+import React, { useEffect, useState } from "react";
+import Highcharts from "highcharts/highstock";
+import HighchartsReact from "highcharts-react-official";
 
-export default class CandleStickChart extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      series: [
-        {
-          name: "candle",
-          data: [],
-        },
-      ],
-      options: {
-        chart: {
-          height: 350,
-          type: "candlestick",
-        },
-        title: {
-          text: "CandleStick Chart - Category X-axis",
-          align: "left",
-        },
-        annotations: {
-          xaxis: [
-            {
-              x: "Oct 06 14:00",
-              borderColor: "#00E396",
-              label: {
-                borderColor: "#00E396",
-                style: {
-                  fontSize: "12px",
-                  color: "#fff",
-                  background: "#00E396",
-                },
-                orientation: "horizontal",
-                offsetY: 7,
-                text: "Annotation Test",
-              },
-            },
+const plotOptions = (data = []) => ({
+  // create the chart
+  rangeSelector: {
+    selected: 1,
+  },
+
+  title: {
+    text: "AAPL Stock Price",
+  },
+
+  series: [
+    {
+      data: data,
+      type: "candlestick",
+      name: "AAPL Stock Price",
+      dataGrouping: {
+        units: [
+          [
+            "day", // unit name
+            [1], // allowed multiples
           ],
-        },
-        tooltip: {
-          enabled: true,
-        },
-        xaxis: {
-          type: "category",
-          labels: {
-            // formatter: (val) => dayjs(val).format('MMM DD HH:mm')
-            formatter: (val) => val,
-          },
-        },
-        yaxis: {
-          tooltip: {
-            enabled: true,
-          },
-        },
+          ["month", [1, 2, 3, 4, 6]],
+        ],
       },
-    };
-  }
+    },
+  ],
+});
+const HighChartsCandlestick = ({ code }) => {
+  const [options, setOptions] = useState({});
+  const [data, setData] = useState([]);
+  const DATA_PATH = `${process.env.REACT_APP_API_PATH}/candlesticks/${code}`;
+  useEffect(() => {
+    fetch(DATA_PATH)
+      .then((data) => data.json())
+      .then((data) => setData(data));
+  }, [DATA_PATH]);
 
-  async componentDidMount() {
-    let data = await fetch("http://localhost:5000/candlesticks").then((res) =>
-      res.json()
-    );
-    data = data.map(({ date, open, high, low, close }) => {
-      return {
-        x: date,
-        y: [open, high, low, close],
-      };
-    });
-    const series = [
-      {
-        data,
-        name: "candle",
-      },
-    ];
-    console.log(series);
-    this.setState({ series });
-  }
+  useEffect(() => {
+    const fullOptions = plotOptions(data);
+    setOptions(fullOptions);
+  }, [data]);
 
-  render() {
-    // console.log(this.state.series);
-    return (
-      <div id="chart">
-        <Chart
-          options={this.state.options}
-          series={this.state.series}
-          type="candlestick"
-          height={350}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <HighchartsReact
+      highcharts={Highcharts}
+      options={options}
+      constructorType={"stockChart"}
+    />
+  );
+};
+
+export default HighChartsCandlestick;

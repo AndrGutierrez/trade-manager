@@ -4,4 +4,7 @@ finnhub-python
 bokeh
 python-dotenv
 flask-cors
+flask-sqlalchemy
 apscheduler
+mysql-connector-python
+mysqlclient

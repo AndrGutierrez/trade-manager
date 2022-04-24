@@ -5,38 +5,73 @@ import finnhub
 
 import pytz
 
-from datetime import datetime
+# from datetime import datetime
 from dotenv import load_dotenv
-from flask import Flask, jsonify
-from bokeh.plotting import figure, output_file
+from flask import jsonify, Response, request
+from bokeh.plotting import figure  #, output_file
 from bokeh.models import NumeralTickFormatter, DatetimeTickFormatter
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask_cors import CORS
 
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+from sqlalchemy.exc import SQLAlchemyError
+from trademanager import app
+from trademanager.database import db
+from trademanager.models import Company
 
 
-def get_stock():
+@app.route('/company/filter')
+def filter_company():
+    '''filter companies by description or symbol'''
+    filtered_companies = []
+    name = (request.args.get('name')).lower()
+    for company in companies:
+        symbol = company['symbol'].lower()
+        description = company['description'].lower()
+        if name in symbol or name in description:
+            filtered_companies.append(company)
+    return jsonify(filtered_companies)
+
+
+@app.route('/company/register', methods=['POST'])
+def register_company():
+    """register company option in db"""
+    code = request.form.get('code')
+    company = list(filter(lambda company: company['symbol'] == code,
+                          companies))[0]
+    company = Company(label=company['description'], value=company["symbol"])
+    try:
+        db.session.add(company)
+        db.session.commit()
+        response = Response("Company registered successfuly", status=200)
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        response = Response(error, status=400)
+
+    return response
+
+
+def get_stock(code):
     """Get stock candles data"""
-    res = finnhub_client.stock_candles('AAPL', 'D', 1590988249, 1591852249)
 
-    candlesticks = []
-    # print(len(res['t']))
+    print("*" * 10)
+    print(code)
+    print("*" * 10)
+    res = finnhub_client.stock_candles('APPL', 'D', 1590988249, 1650672000)
+
+    candles = []
     for i in range(len(res['t'])):
-        date = datetime.fromtimestamp(res['t'][i]).strftime("%d-%m-%Y")
+        # convert javascript unix timestamp
+        date = res['t'][i] * 1000
+        candlestick = [
+            date,
+            # res['t'][i],
+            res['o'][i],
+            res['h'][i],
+            res['l'][i],
+            res['c'][i],
+        ]
+        candles.append(candlestick)
 
-        candlestick = {
-            'date': date,
-            'low': res['l'][i],
-            'high': res['h'][i],
-            'close': res['c'][i],
-            'open': res['o'][i]
-        }
-        candlesticks.append(candlestick)
-
-    return candlesticks
+    return candles
     # dataframe = pd.DataFrame(res)
     # format unix timestamp to datatime
     # dataframe["t"] = pd.to_datetime(dataframe["t"], unit='s')
@@ -86,21 +121,27 @@ def make_plot(dataframe):
 
 @app.route('/candlesticks')
 def candlesticks():
-    stocks = get_stock()
+    code = request.args.get('code')
+    # print("*" * 10)
+    # print(code)
+    # print("*" * 10)
+    stocks = get_stock(code)
     return jsonify(stocks)
 
 
 @app.route('/')
 def home():
     """Home route"""
-    get_stock()
-    return jsonify('a')
+    data = finnhub_client.stock_symbols('US')
+    data = [company["symbol"] for company in data]
+
+    return jsonify(data)
 
 
 def get_daily_data():
     """get stock data and generate plots at the end of the dat"""
     print("Fetching stocks...")
-    get_stock()
+    # get_stock()
     print("Stock update finshed!")
 
 
@@ -108,6 +149,8 @@ if __name__ == '__main__':
     load_dotenv()
     API_KEY = os.environ.get("API_KEY")
     finnhub_client = finnhub.Client(api_key=API_KEY)
+
+    companies = finnhub_client.stock_symbols('US')
 
     EST = pytz.timezone("America/New_York")
     get_daily_data()
