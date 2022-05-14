@@ -18,6 +18,17 @@ from trademanager.database import db
 from trademanager.models import Company
 
 
+@app.route('/companies')
+def get_companies():
+    registered_companies = Company.query.all()
+    registered_companies = [i.as_dict() for i in registered_companies]
+    registered_companies = jsonify(registered_companies)
+
+    return registered_companies
+
+    # return registered_companies
+
+
 @app.route('/company/filter')
 def filter_company():
     '''filter companies by description or symbol'''
@@ -51,14 +62,14 @@ def register_company():
 
 def get_stock(code):
     """Get stock candles data"""
-
-    print("*" * 10)
-    print(code)
-    print("*" * 10)
-    res = finnhub_client.stock_candles('APPL', 'D', 1590988249, 1650672000)
+    res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
 
     candles = []
-    for i in range(len(res['t'])):
+    if res['s'] == 'no_data':
+        return Response('company not found', status=404)
+
+    response_length = len(res['t'])
+    for i in range(response_length):
         # convert javascript unix timestamp
         date = res['t'][i] * 1000
         candlestick = [
@@ -70,6 +81,7 @@ def get_stock(code):
             res['c'][i],
         ]
         candles.append(candlestick)
+    candles = jsonify(candles)
 
     return candles
     # dataframe = pd.DataFrame(res)
@@ -126,7 +138,7 @@ def candlesticks():
     # print(code)
     # print("*" * 10)
     stocks = get_stock(code)
-    return jsonify(stocks)
+    return stocks
 
 
 @app.route('/')

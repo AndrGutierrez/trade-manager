@@ -11,3 +11,6 @@ class Company(db.Model):
     def __init__(self, label, value):
         self.label = label
         self.value = value
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

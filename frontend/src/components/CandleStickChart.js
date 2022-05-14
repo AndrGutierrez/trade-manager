@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
+import axios from "axios";
 
 const plotOptions = (data = []) => ({
   // create the chart
@@ -32,11 +33,21 @@ const plotOptions = (data = []) => ({
 const HighChartsCandlestick = ({ code }) => {
   const [options, setOptions] = useState({});
   const [data, setData] = useState([]);
-  const DATA_PATH = `${process.env.REACT_APP_API_PATH}/candlesticks/${code}`;
+  const DATA_PATH = `${process.env.REACT_APP_API_PATH}/candlesticks`;
+
+  const config = {
+    params: {
+      code: "AAPL",
+    },
+  };
+
   useEffect(() => {
-    fetch(DATA_PATH)
-      .then((data) => data.json())
-      .then((data) => setData(data));
+    axios
+      .get(DATA_PATH, config)
+      .catch((e) => {
+        console.log("++++", e.response.data);
+      })
+      .then((res) => setData(res.data));
   }, [DATA_PATH]);
 
   useEffect(() => {
