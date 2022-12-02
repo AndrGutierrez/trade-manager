@@ -3,21 +3,21 @@ import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
 import axios from "axios";
 
-const plotOptions = (data = []) => ({
+const plotOptions = (data = [], company) => ({
   // create the chart
   rangeSelector: {
     selected: 1,
   },
 
   title: {
-    text: "AAPL Stock Price",
+    text: `${company.label} Stock Price`,
   },
 
   series: [
     {
       data: data,
       type: "candlestick",
-      name: "AAPL Stock Price",
+      name: `${company.label} Stock Price`,
       dataGrouping: {
         units: [
           [
@@ -30,29 +30,35 @@ const plotOptions = (data = []) => ({
     },
   ],
 });
-const HighChartsCandlestick = ({ code }) => {
+const HighChartsCandlestick = ({ filters }) => {
   const [options, setOptions] = useState({});
   const [data, setData] = useState([]);
   const DATA_PATH = `${process.env.REACT_APP_API_PATH}/candlesticks`;
-
-  const config = {
-    params: {
-      code: "AAPL",
-    },
-  };
+  const { company, dateRange } = filters;
 
   useEffect(() => {
+    getData();
+  }, [DATA_PATH, filters]);
+  const getData = () => {
+    const config = {
+      params: {
+        code: company.value || "AAPL",
+        from: dateRange.from,
+        to: dateRange.to,
+      },
+    };
+    // company.value &&
     axios
       .get(DATA_PATH, config)
       .catch((e) => {
-        console.log("++++", e.response.data);
+        throw e;
       })
       .then((res) => setData(res.data));
-  }, [DATA_PATH]);
+  };
 
   useEffect(() => {
-    const fullOptions = plotOptions(data);
-    setOptions(fullOptions);
+    const fullOptions = plotOptions(data, company);
+    data !== [] && setOptions(fullOptions);
   }, [data]);
 
   return (

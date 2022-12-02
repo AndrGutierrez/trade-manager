@@ -1,5 +1,5 @@
 import React from "react";
-import CandleSticks from "../components/CandleSticks";
+import CandleSticks from "../pages/CandleSticks";
 import Layout from "../components/Layout";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
