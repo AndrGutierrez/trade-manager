@@ -16,6 +16,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from trademanager import app
 from trademanager.database import db
 from trademanager.models import Company
+import dateutil.parser as dp
 
 
 @app.route('/companies')
@@ -33,7 +34,7 @@ def get_companies():
 def filter_company():
     '''filter companies by description or symbol'''
     filtered_companies = []
-    name = (request.args.get('name')).lower()
+    name = request.args.get('name').lower()
     for company in companies:
         symbol = company['symbol'].lower()
         description = company['description'].lower()
@@ -60,8 +61,18 @@ def register_company():
     return response
 
 
-def get_stock(code):
+def get_stock(code, start, end):
     """Get stock candles data"""
+
+    formatDate = lambda date: dp.parse(date).strftime('%s')
+    start = formatDate(start)
+
+    end = formatDate(end)
+    print("*"*10)
+    print(start)
+    print("*"*10)
+    print(end)
+    print("*"*10)
     res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
 
     candles = []
@@ -134,10 +145,12 @@ def make_plot(dataframe):
 @app.route('/candlesticks')
 def candlesticks():
     code = request.args.get('code')
+    start = request.args.get('from')
+    end = request.args.get('to')
     # print("*" * 10)
     # print(code)
     # print("*" * 10)
-    stocks = get_stock(code)
+    stocks = get_stock(code, start, end)
     return stocks
 
 
