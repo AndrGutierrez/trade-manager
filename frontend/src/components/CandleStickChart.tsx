@@ -3,7 +3,7 @@ import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
 import axios from "axios";
 
-const plotOptions = (data = [], company) => ({
+const plotOptions = (data = [], company: any) => ({
   // create the chart
   rangeSelector: {
     selected: 1,
@@ -30,7 +30,10 @@ const plotOptions = (data = [], company) => ({
     },
   ],
 });
-const HighChartsCandlestick = ({ filters }) => {
+type HighChartsCandlestickProps ={
+  filters: any
+}
+const HighChartsCandlestick = ({ filters }: HighChartsCandlestickProps) => {
   const [options, setOptions] = useState({});
   const [data, setData] = useState([]);
   const DATA_PATH = `${process.env.REACT_APP_API_PATH}/candlesticks`;
@@ -58,7 +61,7 @@ const HighChartsCandlestick = ({ filters }) => {
 
   useEffect(() => {
     const fullOptions = plotOptions(data, company);
-    data !== [] && setOptions(fullOptions);
+    setOptions(fullOptions);
   }, [data]);
 
   return (
