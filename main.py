@@ -138,7 +138,7 @@ if __name__ == '__main__':
 
     # get daily data when NYSE closes
     scheduler = BackgroundScheduler(timezone=EST)
-    scheduler.add_job(get_daily_data, trigger='cron', hour='16', minute='10')
+    scheduler.add_job(get_daily_data, trigger='cron', hour='16', minute='60')
     scheduler.start()
     app.run(host="0.0.0.0")
     # Shut down the scheduler when exiting the app

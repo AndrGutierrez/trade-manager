@@ -3,18 +3,18 @@ import axios from "axios";
 import Select from "react-select";
 import CandleStickChart from "../components/CandleStickChart";
 import DatePicker from "../components/DatePicker";
-import { DateTime } from "luxon";
 
+const defaultValue: Object={
+    label: "Not selected yet",
+    value: "AAPL",
+  }
 export default function CandleSticks() {
   const DATA_PATH = `${process.env.REACT_APP_API_PATH}/companies`;
   const [options, setOptions] = useState([]);
-  const [initialDate, setInitialDate] = useState(DateTime.now().toISODate());
-  const [endDate, setEndDate] = useState(DateTime.now().toISODate());
-  const [selectedCompany, setSelectedCompany] = useState({
-    label: "Not selected yet",
-    // value: "AAPL",
-  });
-  let filters = {
+  const [initialDate, setInitialDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [selectedCompany, setSelectedCompany] = useState<Object>(defaultValue);
+  let filters: Object = {
     company: selectedCompany,
     dateRange: {
       from: initialDate,
@@ -35,18 +35,17 @@ export default function CandleSticks() {
           <div className="w-1/2 pr-2">
             <Select
               options={options}
-              onChange={(e) => setSelectedCompany(e)}
-              isSearchable={options !== [] ? false : true}
+              onChange={(e) => setSelectedCompany(e || defaultValue)}
             ></Select>
           </div>
           <div className="flex w-2/3 grid-cols-2 gap-2">
             <DatePicker
               value={initialDate}
-              setValue={(date) => setInitialDate(date)}
+              setValue={setInitialDate}
             ></DatePicker>
             <DatePicker
               value={endDate}
-              setValue={(date) => setEndDate(date)}
+              setValue={setEndDate}
             ></DatePicker>
           </div>
         </div>
