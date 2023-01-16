@@ -5,17 +5,20 @@ import finnhub
 
 import pytz
 
+from trademanager import app
 # from datetime import datetime
 from dotenv import load_dotenv
-from flask import jsonify, Response, request
+from flask import jsonify, request
+from flask.wrappers import Response
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from sqlalchemy.exc import SQLAlchemyError
-from trademanager import app
 from trademanager.database import db
 from trademanager.models import Company
 import dateutil.parser as dp
 
+API_KEY = os.environ.get("API_KEY")
+finnhub_client = finnhub.Client(api_key=API_KEY)
 
 @app.route('/companies')
 def get_companies():
@@ -127,8 +130,6 @@ def get_daily_data():
 
 if __name__ == '__main__':
     load_dotenv()
-    API_KEY = os.environ.get("API_KEY")
-    finnhub_client = finnhub.Client(api_key=API_KEY)
 
     companies = finnhub_client.stock_symbols('US')
 
@@ -139,6 +140,6 @@ if __name__ == '__main__':
     scheduler = BackgroundScheduler(timezone=EST)
     scheduler.add_job(get_daily_data, trigger='cron', hour='16', minute='10')
     scheduler.start()
-    app.run(port=5000, host='0.0.0.0')
+    app.run(host="0.0.0.0")
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: scheduler.shutdown())
