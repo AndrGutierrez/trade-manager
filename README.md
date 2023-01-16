@@ -6,6 +6,8 @@ Build
 
 `docker build -t trademanager .`
 
+`docker build -f Dockerfile.client -t frontend .`
+
 Run
 
 `docker compose up`
