@@ -8,13 +8,8 @@ services:
     restart: always
     ports:
       - "5000:5000"
-    environment:
-      - FLASK_DEBUG=true
-      - API_KEY=c65i50aad3i9pn79r35g
-      - DATABASE_PASSWORD=
-      - DATABASE_NAME=trademanager
-      - DATABASE_USER=root
-      - DATABASE_HOST=db
+    env_file:
+      - .env
     links:
       - db
   db:
@@ -23,10 +18,8 @@ services:
     command: mysqld --authentication_policy=mysql_native_password
     ports: 
       - "3307:3306"
-    environment:
-      - MYSQL_DATABASE=trademanager
-      - MYSQL_ROOT_PASSWORD=
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    env_file:
+      - .env
     volumes:
       - /var/lib/mysql 
   frontend:
