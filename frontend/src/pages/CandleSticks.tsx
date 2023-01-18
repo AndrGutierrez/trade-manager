@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import Select from "react-select";
 import CandleStickChart from "../components/CandleStickChart";
 import DatePicker from "../components/DatePicker";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
-const defaultValue: Object={
-    label: "Not selected yet",
-    value: "AAPL",
-  }
+const defaultValue: object = {
+  label: "Not selected yet",
+  value: "AAPL",
+};
 export default function CandleSticks() {
-  const DATA_PATH = `${process.env.REACT_APP_API_PATH}/companies`;
-  const [options, setOptions] = useState([]);
+  const portfolio: object = useSelector((state: RootState) => state.portfolio);
   const [initialDate, setInitialDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [selectedCompany, setSelectedCompany] = useState<Object>(defaultValue);
@@ -22,9 +22,6 @@ export default function CandleSticks() {
     },
   };
   const [selectedFilters, setSelectedFilters] = useState(filters);
-  useEffect(() => {
-    axios.get(DATA_PATH).then(({ data }) => setOptions(data));
-  }, [DATA_PATH]);
 
   return (
     <>
@@ -34,7 +31,7 @@ export default function CandleSticks() {
         <div className="flex">
           <div className="w-1/2 pr-2">
             <Select
-              options={options}
+              options={portfolio as Array<unknown>}
               onChange={(e) => setSelectedCompany(e || defaultValue)}
             ></Select>
           </div>
@@ -43,10 +40,7 @@ export default function CandleSticks() {
               value={initialDate}
               setValue={setInitialDate}
             ></DatePicker>
-            <DatePicker
-              value={endDate}
-              setValue={setEndDate}
-            ></DatePicker>
+            <DatePicker value={endDate} setValue={setEndDate}></DatePicker>
           </div>
         </div>
         <button
