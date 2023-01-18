@@ -9,7 +9,7 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - .env
+      - .env.production
     links:
       - db
   db:
@@ -19,7 +19,7 @@ services:
     ports: 
       - "3307:3306"
     env_file:
-      - .env
+      - .env.production
     volumes:
       - /var/lib/mysql 
   frontend:

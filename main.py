@@ -69,11 +69,6 @@ def get_stock(code, start, end):
     start = formatDate(start)
 
     end = formatDate(end)
-    print("*"*10)
-    print(start)
-    print("*"*10)
-    print(end)
-    print("*"*10)
     res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
 
     candles = []
@@ -105,9 +100,6 @@ def candlesticks():
     code = request.args.get('code')
     start = request.args.get('from')
     end = request.args.get('to')
-    # print("*" * 10)
-    # print(code)
-    # print("*" * 10)
     stocks = get_stock(code, start, end)
     return stocks
 
@@ -138,7 +130,7 @@ if __name__ == '__main__':
 
     # get daily data when NYSE closes
     scheduler = BackgroundScheduler(timezone=EST)
-    scheduler.add_job(get_daily_data, trigger='cron', hour='16', minute='60')
+    scheduler.add_job(get_daily_data, trigger='cron', hour='16', minute='10')
     scheduler.start()
     app.run(host="0.0.0.0")
     # Shut down the scheduler when exiting the app
