@@ -5,12 +5,17 @@ Column = db.Column
 
 class Company(db.Model):
     id = Column(db.Integer, primary_key=True)
-    label = Column(db.String(256), nullable=False)
+    label = Column(db.String(255), nullable=False)
     value = Column(db.String(4), unique=True, nullable=False)
+    logo = Column(db.String(1023), nullable=False)
+    weburl = Column(db.String(255), nullable=False)
+    
 
-    def __init__(self, label, value):
+    def __init__(self, label:str, value:str, logo:str, weburl:str):
         self.label = label
         self.value = value
+        self.logo = logo
+        self.weburl = weburl
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

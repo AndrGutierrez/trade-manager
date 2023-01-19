@@ -20,8 +20,8 @@ import dateutil.parser as dp
 API_KEY = os.environ.get("API_KEY")
 finnhub_client = finnhub.Client(api_key=API_KEY)
 
-@app.route('/companies')
-def get_companies():
+@app.route('/portfolio')
+def get_portfolio():
     registered_companies = Company.query.all()
     registered_companies = [i.as_dict() for i in registered_companies]
     registered_companies = jsonify(registered_companies)
@@ -34,23 +34,17 @@ def get_companies():
 @app.route('/company/filter')
 def filter_company():
     '''filter companies by description or symbol'''
-    filtered_companies = []
-    name = request.args.get('name').lower()
-    for company in companies:
-        symbol = company['symbol'].lower()
-        description = company['description'].lower()
-        if name in symbol or name in description:
-            filtered_companies.append(company)
-    return jsonify(filtered_companies)
+    name = request.args.get('name')
+    company = finnhub_client.company_profile2(symbol=name)
+    return jsonify(company)
 
 
 @app.route('/company/register', methods=['POST'])
 def register_company():
     """register company option in db"""
     code = request.form.get('code')
-    company = list(filter(lambda company: company['symbol'] == code,
-                          companies))[0]
-    company = Company(label=company['description'], value=company["symbol"])
+    company = finnhub_client.company_profile2(symbol=code)
+    company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"])
     try:
         db.session.add(company)
         db.session.commit()
