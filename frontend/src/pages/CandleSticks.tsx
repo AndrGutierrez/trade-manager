@@ -5,9 +5,9 @@ import DatePicker from "../components/DatePicker";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
-const defaultValue: object = {
+const defaultValue: { label: string; name: string } = {
   label: "Not selected yet",
-  value: "AAPL",
+  name: "",
 };
 export default function CandleSticks() {
   const portfolio: object = useSelector((state: RootState) => state.portfolio);
