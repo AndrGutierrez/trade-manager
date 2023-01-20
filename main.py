@@ -1,17 +1,11 @@
 """Main Flask a´ file"""
 import os
-import atexit
 import finnhub
 
-import pytz
-
 from trademanager import app
-# from datetime import datetime
 from dotenv import load_dotenv
 from flask import jsonify, request
 from flask.wrappers import Response
-from apscheduler.schedulers.background import BackgroundScheduler
-
 from sqlalchemy.exc import SQLAlchemyError
 from trademanager.database import db
 from trademanager.models import Company
@@ -27,9 +21,6 @@ def get_portfolio():
     registered_companies = jsonify(registered_companies)
 
     return registered_companies
-
-    # return registered_companies
-
 
 @app.route('/company/filter')
 def filter_company():
@@ -61,13 +52,12 @@ def get_stock(code, start, end):
 
     formatDate = lambda date: dp.parse(date).strftime('%s')
     start = formatDate(start)
-
     end = formatDate(end)
-    res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
+    # res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
+    res = finnhub_client.stock_candles(code, 'D', start, end)
 
     candles = []
-    if res['s'] == 'no_data':
-        return Response('company not found', status=404)
+    if res['s'] == 'no_data': return Response('company not found', status=404)
 
     response_length = len(res['t'])
     for i in range(response_length):
@@ -85,9 +75,6 @@ def get_stock(code, start, end):
     candles = jsonify(candles)
 
     return candles
-
-
-
 
 @app.route('/candlesticks')
 def candlesticks():
@@ -107,25 +94,6 @@ def home():
     return jsonify(data)
 
 
-def get_daily_data():
-    """get stock data and generate plots at the end of the dat"""
-    print("Fetching stocks...")
-    # get_stock()
-    print("Stock update finshed!")
-
-
 if __name__ == '__main__':
     load_dotenv()
-
-    companies = finnhub_client.stock_symbols('US')
-
-    EST = pytz.timezone("America/New_York")
-    get_daily_data()
-
-    # get daily data when NYSE closes
-    scheduler = BackgroundScheduler(timezone=EST)
-    scheduler.add_job(get_daily_data, trigger='cron', hour='16', minute='59')
-    scheduler.start()
     app.run(host="0.0.0.0")
-    # Shut down the scheduler when exiting the app
-    atexit.register(lambda: scheduler.shutdown())
