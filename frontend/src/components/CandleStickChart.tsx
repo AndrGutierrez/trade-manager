@@ -33,13 +33,11 @@ const plotOptions = (data = [], company: any) => ({
     },
   ],
 });
-type HighChartsCandlestickProps = {
-  filters: any;
-};
-const HighChartsCandlestick = ({ filters }: HighChartsCandlestickProps) => {
+const HighChartsCandlestick = () => {
   const [options, setOptions] = useState({});
   const data = useSelector((state: RootState) => state.candlesticks);
-  const { company, dateRange } = filters;
+  const filters = useSelector((state: RootState) => state.filters);
+  const { company, dateRange }: any = filters;
   const dispatch = useDispatch<AppDispatch>();
 
   const getData = (condition: boolean = true): void => {

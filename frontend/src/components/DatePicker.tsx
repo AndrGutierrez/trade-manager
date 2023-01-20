@@ -8,13 +8,12 @@ type DatePickerProps = {
 };
 
 const formatDate = (date: Date) =>
-  DateTime.fromJSDate(date ? date : new Date()).toISODate();
+  DateTime.fromJSDate(date || new Date()).toISODate();
 export default function DatePicker({ value, setValue }: DatePickerProps) {
   const convertEventToDate = (
     event: ChangeEvent<HTMLInputElement> | undefined
   ): Date => (event ? new Date(event.target.value || value) : new Date());
   const setDate = (e: Date | undefined) => {
-    console.log(e);
     setValue(e);
     setShowCalendar(false);
   };

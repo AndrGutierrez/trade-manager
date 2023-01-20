@@ -36,7 +36,7 @@ export default function CandleSticks() {
 
   return (
     <>
-      <CandleStickChart filters={selectedFilters}></CandleStickChart>
+      <CandleStickChart></CandleStickChart>
       <div className="py-3 px-2 w-2/3">
         <h3 className="text-lg">Select company</h3>
         <div className="flex">
