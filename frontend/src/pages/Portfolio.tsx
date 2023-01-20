@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { RootState } from "../store";
 import { useSelector } from "react-redux";
 import Select from "react-select";
@@ -12,9 +12,6 @@ type ItemProps = {
 };
 export default function Portfolio() {
   const portfolio = useSelector((state: RootState) => state.portfolio);
-  // useEffect(() => {
-  //   portfolio.forEach((company: object) => console.log(company));
-  // }, [portfolio]);
   return (
     <div className="flex">
       <div className="md:w-1/3">

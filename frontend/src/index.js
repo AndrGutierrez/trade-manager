@@ -7,6 +7,7 @@ import "react-day-picker/dist/style.css";
 
 import { Provider } from "react-redux";
 import store from "./store";
+process.env.NODE_PATH = "src";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>

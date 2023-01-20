@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Select from "react-select";
-import CandleStickChart from "../components/CandleStickChart";
-import DatePicker from "../components/DatePicker";
+import CandleStickChart from "components/CandleStickChart";
+import DatePicker from "components/DatePicker";
 import { useSelector } from "react-redux";
-import { RootState } from "../store";
+import { RootState } from "store";
 
 const defaultValue: { label: string; name: string } = {
   label: "Not selected yet",

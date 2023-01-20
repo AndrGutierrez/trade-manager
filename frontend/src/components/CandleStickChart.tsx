@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
-import axios, { AxiosRequestConfig } from "axios";
-import { getCandleSticks } from "../slices/candlesticks";
+import { AxiosRequestConfig } from "axios";
+import { getCandleSticks } from "slices/candlesticks";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store";
+import { AppDispatch, RootState } from "store";
 
 const plotOptions = (data = [], company: any) => ({
   // create the chart
