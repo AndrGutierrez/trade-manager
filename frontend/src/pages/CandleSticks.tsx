@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import Select from "react-select";
+import React, { useEffect, useState } from "react";
+import Select, { GroupBase } from "react-select";
 import CandleStickChart from "components/CandleStickChart";
 import DatePicker from "components/DatePicker";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
+import { DateTime } from "luxon";
+import { setFilters } from "slices/filters";
 
 const defaultValue: { label: string; name: string } = {
   label: "Not selected yet",
@@ -11,17 +13,26 @@ const defaultValue: { label: string; name: string } = {
 };
 export default function CandleSticks() {
   const portfolio: object = useSelector((state: RootState) => state.portfolio);
-  const [initialDate, setInitialDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const selectedFilters = useSelector((state: RootState) => state.filters);
+  const [initialDate, setInitialDate] = useState(
+    new Date(selectedFilters.dateRange.from)
+  );
+  const [endDate, setEndDate] = useState(
+    new Date(selectedFilters.dateRange.to)
+  );
   const [selectedCompany, setSelectedCompany] = useState<Object>(defaultValue);
-  let filters: Object = {
-    company: selectedCompany,
-    dateRange: {
-      from: initialDate,
-      to: endDate,
-    },
+  const dispatch = useDispatch();
+  const setSelectedFilters = () => {
+    dispatch(
+      setFilters({
+        company: selectedCompany,
+        dateRange: {
+          from: initialDate.toString(),
+          to: endDate.toString(),
+        },
+      })
+    );
   };
-  const [selectedFilters, setSelectedFilters] = useState(filters);
 
   return (
     <>
@@ -31,7 +42,8 @@ export default function CandleSticks() {
         <div className="flex">
           <div className="w-1/2 pr-2">
             <Select
-              options={portfolio as Array<unknown>}
+              options={portfolio as GroupBase<string>[]}
+              defaultValue={selectedFilters.company}
               onChange={(e) => setSelectedCompany(e || defaultValue)}
             ></Select>
           </div>
@@ -45,7 +57,7 @@ export default function CandleSticks() {
         </div>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setSelectedFilters(filters)}
+          onClick={() => setSelectedFilters()}
         >
           Select
         </button>

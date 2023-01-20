@@ -57,7 +57,6 @@ const HighChartsCandlestick = ({ filters }: HighChartsCandlestickProps) => {
     getData(dataIsEmpty);
   }, []);
   useEffect(() => {
-    console.log(dateRange);
     getData();
   }, [filters]);
 

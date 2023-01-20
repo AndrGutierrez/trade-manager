@@ -1,13 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosRequestConfig } from "axios";
-const initialState = {};
-const PATH = `${process.env.REACT_APP_API_PATH}/candlesticks`;
+import { DateTime } from "luxon";
+const initialState: Object = {};
+const PATH: string = `${process.env.REACT_APP_API_PATH}/candlesticks`;
 
+const convertToISO = (date: string): string =>
+  DateTime.fromJSDate(new Date(date)).toISO();
 export const getCandleSticks = createAsyncThunk(
   "candlesticks/get",
   async (config: AxiosRequestConfig) => {
-    const data = await axios.get(PATH, config);
-    return data.data;
+    if (config.params.code) {
+      config.params.from = convertToISO(config.params.from);
+      config.params.to = convertToISO(config.params.to);
+      const { data } = await axios.get(PATH, config);
+      return data;
+    }
+    return {};
   }
 );
 
