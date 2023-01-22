@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Select, { GroupBase } from "react-select";
 import CandleStickChart from "components/CandleStickChart";
 import DatePicker from "components/DatePicker";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
-import { DateTime } from "luxon";
 import { setFilters } from "slices/filters";
 
 const defaultValue: { label: string; name: string } = {
@@ -23,15 +22,18 @@ export default function CandleSticks() {
   const [selectedCompany, setSelectedCompany] = useState<Object>(defaultValue);
   const dispatch = useDispatch();
   const setSelectedFilters = () => {
-    dispatch(
-      setFilters({
-        company: selectedCompany,
-        dateRange: {
-          from: initialDate.toString(),
-          to: endDate.toString(),
-        },
-      })
-    );
+    console.log(initialDate, endDate, selectedCompany);
+    if (initialDate && endDate && selectedCompany) {
+      dispatch(
+        setFilters({
+          company: selectedCompany,
+          dateRange: {
+            from: initialDate.toString(),
+            to: endDate.toString(),
+          },
+        })
+      );
+    }
   };
 
   return (
@@ -54,13 +56,15 @@ export default function CandleSticks() {
             ></DatePicker>
             <DatePicker value={endDate} setValue={setEndDate}></DatePicker>
           </div>
+          <div className="pl-2">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setSelectedFilters()}
+            >
+              Select
+            </button>
+          </div>
         </div>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setSelectedFilters()}
-        >
-          Select
-        </button>
       </div>
     </>
   );
