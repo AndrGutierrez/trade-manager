@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 const initialState = {};
 const PATH = `${process.env.REACT_APP_API_PATH}/portfolio`;
-const COMPANY_PATH = `${process.env.REACT_APP_API_PATH}/company`;
 const POST_PATH = `${process.env.REACT_APP_API_PATH}/company/register`;
 
 export const getPortfolio = createAsyncThunk("portfolio/get", async () => {

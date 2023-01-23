@@ -5,8 +5,8 @@ import AsyncSelect from "react-select/async";
 import Button from "components/utils/Button";
 import axios, { AxiosRequestConfig } from "axios";
 import { OptionsOrGroups } from "react-select";
-
 import { updatePortfolio } from "slices/portfolio";
+
 type ItemProps = {
   label: string;
   id: number;
@@ -14,21 +14,20 @@ type ItemProps = {
   logo: string;
   weburl: string;
 };
+
 export default function Portfolio() {
   const portfolio = useSelector((state: RootState) => state.portfolio);
   const [portfolioHasItems, setPortfolioHasItems] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>("");
-  const PATH = `${process.env.REACT_APP_API_PATH}`;
+  const COMPANIES_PATH = `${process.env.REACT_APP_API_PATH}`;
   const dispatch = useDispatch<AppDispatch>();
+
   useEffect(() => {
-    console.log(portfolio);
     if (Object.keys(portfolio).length !== 0) setPortfolioHasItems(true);
   }, [portfolio]);
-  const submit: MouseEventHandler = () => {
-    const data = new FormData();
-    data.append("code", selectedOption);
+
+  const submit: MouseEventHandler = () =>
     dispatch(updatePortfolio(selectedOption));
-  };
 
   const handleChange = (
     inputValue: string
@@ -38,8 +37,7 @@ export default function Portfolio() {
         name: inputValue,
       },
     };
-    // setTimeout(() => axios.get(PATH, config).then(({ data }) => data), 1000);
-    return axios.get(PATH, config).then(({ data }) => data);
+    return axios.get(COMPANIES_PATH, config).then(({ data }) => data);
   };
   return (
     <div className="flex">
