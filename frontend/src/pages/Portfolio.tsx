@@ -1,5 +1,5 @@
 import React, { useState, useEffect, MouseEventHandler } from "react";
-import { RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncSelect from "react-select/async";
 import Button from "components/utils/Button";
@@ -7,7 +7,6 @@ import axios, { AxiosRequestConfig } from "axios";
 import { OptionsOrGroups } from "react-select";
 
 import { updatePortfolio } from "slices/portfolio";
-import { Settings } from "luxon";
 type ItemProps = {
   label: string;
   id: number;
@@ -20,15 +19,14 @@ export default function Portfolio() {
   const [portfolioHasItems, setPortfolioHasItems] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>("");
   const PATH = `${process.env.REACT_APP_API_PATH}`;
-  const POST_PATH = `${process.env.REACT_APP_API_PATH}/company/register`;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
+    console.log(portfolio);
     if (Object.keys(portfolio).length !== 0) setPortfolioHasItems(true);
   }, [portfolio]);
   const submit: MouseEventHandler = () => {
     const data = new FormData();
     data.append("code", selectedOption);
-    axios.post(POST_PATH, data);
     dispatch(updatePortfolio(selectedOption));
   };
 

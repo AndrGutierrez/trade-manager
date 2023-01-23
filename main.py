@@ -22,7 +22,7 @@ def get_portfolio():
 
     return registered_companies
 
-@app.route('/company/filter')
+@app.route('/company')
 def filter_company():
     '''filter companies by description or symbol'''
     name = request.args.get('name')
@@ -34,13 +34,14 @@ def filter_company():
 def register_company():
     """register company option in db"""
     code = request.form.get('code')
-    print(code)
     company = finnhub_client.company_profile2(symbol=code)
+    print(company)
     company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"])
     try:
         db.session.add(company)
         db.session.commit()
-        response = Response("Company registered successfuly", status=200)
+        # response = Response("Company registered successfuly", status=200)
+        response =company.serialize 
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         response = Response(error, status=400)

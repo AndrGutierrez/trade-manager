@@ -19,3 +19,11 @@ class Company(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    @property
+    def serialize(self):
+        return {
+                "label": self.label,
+                "value": self.value,
+                "logo": self.logo,
+                "weburl": self.weburl,
+                }
