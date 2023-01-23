@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, MouseEventHandler } from "react";
 import { RootState } from "../store";
-import { useSelector } from "react-redux";
-import Select from "react-select";
+import { useDispatch, useSelector } from "react-redux";
+import AsyncSelect from "react-select/async";
+import Button from "components/utils/Button";
+import axios, { AxiosRequestConfig } from "axios";
+import { OptionsOrGroups } from "react-select";
 
+import { updatePortfolio } from "slices/portfolio";
+import { Settings } from "luxon";
 type ItemProps = {
   label: string;
   id: number;
@@ -13,19 +18,43 @@ type ItemProps = {
 export default function Portfolio() {
   const portfolio = useSelector((state: RootState) => state.portfolio);
   const [portfolioHasItems, setPortfolioHasItems] = useState(false);
-  const [value, setValue] = useState({});
-  const defaultValue = "";
+  const [selectedOption, setSelectedOption] = useState<string>("");
+  const PATH = `${process.env.REACT_APP_API_PATH}`;
+  const POST_PATH = `${process.env.REACT_APP_API_PATH}/company/register`;
+  const dispatch = useDispatch();
   useEffect(() => {
     if (Object.keys(portfolio).length !== 0) setPortfolioHasItems(true);
   }, [portfolio]);
+  const submit: MouseEventHandler = () => {
+    const data = new FormData();
+    data.append("code", selectedOption);
+    axios.post(POST_PATH, data);
+    dispatch(updatePortfolio(selectedOption));
+  };
 
+  const handleChange = (
+    inputValue: string
+  ): void | Promise<OptionsOrGroups<never, never>> => {
+    const config: AxiosRequestConfig = {
+      params: {
+        name: inputValue,
+      },
+    };
+    // setTimeout(() => axios.get(PATH, config).then(({ data }) => data), 1000);
+    return axios.get(PATH, config).then(({ data }) => data);
+  };
   return (
     <div className="flex">
-      <div className="md:w-1/3">
-        <Select
-          className="w-3/4 m-5"
-          onChange={(e) => setValue(e || defaultValue)}
-        ></Select>
+      <div className="md:w-1/3 flex align-center justify-evenly my-5">
+        <AsyncSelect
+          className="w-3/4 p-0 h-min"
+          cacheOptions
+          loadOptions={handleChange}
+          onChange={(e) => setSelectedOption(e ? Object(e).value : "")}
+        ></AsyncSelect>
+        <div className="">
+          <Button name="select" action={submit} type="submit"></Button>
+        </div>
       </div>
       <div className="xl:w-50 md:w-2/3">
         <h2 className="text-[2.3rem] font-semibold pt-5 px-3">
