@@ -13,11 +13,12 @@ const portfolioSlice = createSlice({
   initialState,
   reducers: {
     portfolio: (state) => Object(state),
+    updatePortfolio: (state, { payload }) => Object({ ...state, payload }),
   },
   extraReducers: {
     [getPortfolio.fulfilled.toString()]: (state, { payload }) => payload,
   },
 });
 
-export const { portfolio } = portfolioSlice.actions;
+export const { portfolio, updatePortfolio } = portfolioSlice.actions;
 export default portfolioSlice.reducer;

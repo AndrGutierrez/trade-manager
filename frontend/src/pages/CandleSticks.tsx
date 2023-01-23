@@ -22,7 +22,6 @@ export default function CandleSticks() {
   const [selectedCompany, setSelectedCompany] = useState<Object>(defaultValue);
   const dispatch = useDispatch();
   const setSelectedFilters = () => {
-    console.log(initialDate, endDate, selectedCompany);
     if (initialDate && endDate && selectedCompany) {
       dispatch(
         setFilters({

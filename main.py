@@ -34,6 +34,7 @@ def filter_company():
 def register_company():
     """register company option in db"""
     code = request.form.get('code')
+    print(code)
     company = finnhub_client.company_profile2(symbol=code)
     company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"])
     try:
@@ -53,6 +54,7 @@ def get_stock(code, start, end):
     formatDate = lambda date: dp.parse(date).strftime('%s')
     start = formatDate(start)
     end = formatDate(end)
+    print(start, end)
     # res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
     res = finnhub_client.stock_candles(code, 'D', start, end)
 
@@ -88,12 +90,12 @@ def candlesticks():
 @app.route('/')
 def home():
     """Home route"""
-    data = finnhub_client.stock_symbols('US')
-    data = [company["symbol"] for company in data]
-
-    return jsonify(data)
+    name = str(request.args.get("name")).upper()
+    res = [{ "value": company["symbol"], "label": company["description"]} for company in data if name in company["description"].upper()][:50]
+    return jsonify(res)
 
 
 if __name__ == '__main__':
     load_dotenv()
+    data = finnhub_client.stock_symbols('US')
     app.run(host="0.0.0.0")
