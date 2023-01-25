@@ -41,15 +41,18 @@ export default function Portfolio() {
   };
   return (
     <div className="flex">
-      <div className="md:w-1/3 flex align-center justify-evenly my-5">
-        <AsyncSelect
-          className="w-3/4 p-0 h-min"
-          cacheOptions
-          loadOptions={handleChange}
-          onChange={(e) => setSelectedOption(e ? Object(e).value : "")}
-        ></AsyncSelect>
-        <div className="">
-          <Button name="select" action={submit} type="submit"></Button>
+      <div className="md:w-1/3 my-5 px-3">
+        <h2 className="text-[2.3rem] font-semibold  ">Add Asset</h2>
+        <div className="flex align-center ">
+          <AsyncSelect
+            className="w-3/4 p-0 h-min"
+            cacheOptions
+            loadOptions={handleChange}
+            onChange={(e) => setSelectedOption(e ? Object(e).value : "")}
+          ></AsyncSelect>
+          <div className="pl-3">
+            <Button name="select" action={submit} type="submit"></Button>
+          </div>
         </div>
       </div>
       <div className="xl:w-50 md:w-2/3">

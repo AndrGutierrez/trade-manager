@@ -35,7 +35,6 @@ def register_company():
     """register company option in db"""
     code = request.form.get('code')
     company = finnhub_client.company_profile2(symbol=code)
-    print(company)
     company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"])
     try:
         db.session.add(company)
@@ -55,7 +54,6 @@ def get_stock(code, start, end):
     formatDate = lambda date: dp.parse(date).strftime('%s')
     start = formatDate(start)
     end = formatDate(end)
-    print(start, end)
     # res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
     res = finnhub_client.stock_candles(code, 'D', start, end)
 
