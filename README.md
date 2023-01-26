@@ -11,3 +11,6 @@ Build
 Run
 
 `docker compose up`
+
+### TODO:
+Add menu and user authentication
