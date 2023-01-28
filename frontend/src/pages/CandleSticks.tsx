@@ -11,21 +11,19 @@ import { getCandleSticks } from "slices/candlesticks";
 export default function CandleSticks() {
   const portfolio: object = useSelector((state: RootState) => state.portfolio);
   const selectedFilters = useSelector((state: RootState) => state.filters);
-  const [initialDate, setInitialDate] = useState(
-    new Date(selectedFilters.dateRange.from)
-  );
-  const [endDate, setEndDate] = useState(
-    new Date(selectedFilters.dateRange.to)
-  );
-  const [selectedCompany, setSelectedCompany] = useState<Object>(
-    selectedFilters.company
-  );
+  const {
+    dateRange,
+    company,
+  }: { dateRange: { from: string; to: string }; company: Object } =
+    selectedFilters;
+  const [initialDate, setInitialDate] = useState(new Date(dateRange.from));
+  const [endDate, setEndDate] = useState(new Date(dateRange.to));
+  const [selectedCompany, setSelectedCompany] = useState<Object>(company);
   const dispatch = useDispatch<AppDispatch>();
   const setSelectedFilters = () => {
     if (initialDate && endDate && selectedCompany) {
-      console.log(selectedCompany);
       const filters = {
-        company: selectedCompany || selectedFilters.company,
+        company: selectedCompany || company,
         dateRange: {
           from: initialDate.toString(),
           to: endDate.toString(),
