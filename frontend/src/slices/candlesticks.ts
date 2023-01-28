@@ -10,6 +10,7 @@ export const getCandleSticks = createAsyncThunk(
   "candlesticks/get",
   async (config: AxiosRequestConfig) => {
     if (config.params.code) {
+      config.params.code = config.params.code.value;
       config.params.from = convertToISO(config.params.from);
       config.params.to = convertToISO(config.params.to);
       const { data } = await axios.get(PATH, config);

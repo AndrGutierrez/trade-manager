@@ -3,13 +3,11 @@ import Select, { GroupBase } from "react-select";
 import CandleStickChart from "components/CandleStickChart";
 import DatePicker from "components/DatePicker";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "store";
+import { AppDispatch, RootState } from "store";
 import { setFilters } from "slices/filters";
+import { AxiosRequestConfig } from "axios";
+import { getCandleSticks } from "slices/candlesticks";
 
-const defaultValue: { label: string; name: string } = {
-  label: "Not selected yet",
-  name: "",
-};
 export default function CandleSticks() {
   const portfolio: object = useSelector((state: RootState) => state.portfolio);
   const selectedFilters = useSelector((state: RootState) => state.filters);
@@ -19,19 +17,29 @@ export default function CandleSticks() {
   const [endDate, setEndDate] = useState(
     new Date(selectedFilters.dateRange.to)
   );
-  const [selectedCompany, setSelectedCompany] = useState<Object>(defaultValue);
-  const dispatch = useDispatch();
+  const [selectedCompany, setSelectedCompany] = useState<Object>(
+    selectedFilters.company
+  );
+  const dispatch = useDispatch<AppDispatch>();
   const setSelectedFilters = () => {
     if (initialDate && endDate && selectedCompany) {
-      dispatch(
-        setFilters({
-          company: selectedCompany,
-          dateRange: {
-            from: initialDate.toString(),
-            to: endDate.toString(),
-          },
-        })
-      );
+      console.log(selectedCompany);
+      const filters = {
+        company: selectedCompany || selectedFilters.company,
+        dateRange: {
+          from: initialDate.toString(),
+          to: endDate.toString(),
+        },
+      };
+      const config: AxiosRequestConfig = {
+        params: {
+          code: filters.company,
+          from: filters.dateRange.from,
+          to: filters.dateRange.to,
+        },
+      };
+      dispatch(setFilters(filters));
+      dispatch(getCandleSticks(config));
     }
   };
 
@@ -45,7 +53,7 @@ export default function CandleSticks() {
             <Select
               options={portfolio as GroupBase<string>[]}
               defaultValue={selectedFilters.company}
-              onChange={(e) => setSelectedCompany(e || defaultValue)}
+              onChange={(e: any) => setSelectedCompany(e)}
             ></Select>
           </div>
           <div className="flex w-2/3 grid-cols-2 gap-2">
