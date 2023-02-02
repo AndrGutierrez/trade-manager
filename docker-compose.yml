@@ -1,31 +1,46 @@
 version: "3.9"
 services:
+  db:
+    image: mysql:latest
+    container_name: db
+    ports: 
+      - "3307:3306"
+    expose:
+      - "3307"
+        # DATABASE_HOST ENV VARIABLE MUST BE "DB"
+    env_file:
+      - .env
+    volumes:
+      - ./.mysql-data/db:/var/lib/mysql 
+    restart: always
   app:
-    build: 
-      context: .
-      dockerfile: Dockerfile
     container_name: app
+    build: 
+      context: backend
+      dockerfile: Dockerfile
     restart: always
     ports:
       - "5000:5000"
     env_file:
-      - .env.production
+      - .env
     links:
       - db
-  db:
-    image: mysql
-    container_name: db
-    command: mysqld --authentication_policy=mysql_native_password
-    ports: 
-      - "3307:3306"
-    env_file:
-      - .env.production
-    volumes:
-      - /var/lib/mysql 
   frontend:
     container_name: frontend
+    restart: always
     build:
-      context: .
-      dockerfile: Dockerfile.client
+      context: frontend
+      dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "3000:3000"
+  nginx:
+    container_name: nginx
+    build: 
+      context: "./nginx"
+      dockerfile: Dockerfile
+    ports: 
+      - "80:80"
+    links: 
+      - app
+      - frontend
+    restart: always

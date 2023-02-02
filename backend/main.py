@@ -13,6 +13,8 @@ import dateutil.parser as dp
 
 API_KEY = os.environ.get("API_KEY")
 finnhub_client = finnhub.Client(api_key=API_KEY)
+load_dotenv()
+data = finnhub_client.stock_symbols('US')
 
 @app.route('/portfolio')
 def get_portfolio():
@@ -95,6 +97,5 @@ def home():
 
 
 if __name__ == '__main__':
-    load_dotenv()
-    data = finnhub_client.stock_symbols('US')
-    app.run(host="0.0.0.0")
+    app.run()
+
