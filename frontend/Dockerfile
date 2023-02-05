@@ -4,6 +4,7 @@ WORKDIR /app
 # Copy app files
 COPY . .
 # Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
+ENV REACT_APP_API_PATH http://localhost/api
 RUN npm ci 
 RUN npm i -g serve
 RUN npm run build
