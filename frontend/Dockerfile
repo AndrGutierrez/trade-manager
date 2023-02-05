@@ -6,12 +6,11 @@ COPY . .
 # Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
 RUN npm ci 
 RUN npm i -g serve
-# Build the app
 RUN npm run build
+# Build the app
 
 # Bundle static assets with nginx
 # FROM nginx:1.21.0-alpine as production
-ENV NODE_ENV production
 # Copy built assets from `builder` image
 # COPY --from=builder /app/build /usr/share/nginx/html
 # Add your nginx.conf

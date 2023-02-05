@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-const initialState = {};
+const initialState: Object[] = [];
 const PATH = `${process.env.REACT_APP_API_PATH}/portfolio`;
 const POST_PATH = `${process.env.REACT_APP_API_PATH}/company/register`;
 
+console.log(process.env);
 export const getPortfolio = createAsyncThunk("portfolio/get", async () => {
   const data = await axios.get(PATH);
   return data.data;
