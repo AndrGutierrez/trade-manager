@@ -21,6 +21,8 @@ def test_invalid_registration(client):
         [
             ("MSFT", "1900-12-12", "2023-12-12"),
             ("invalid", "2099-12-25", "2099-12-25"),
+            ("AAPL", "2099-12-25", "2099-12-25"),
+            ("AAPL", "2022-12-25", "2020-12-25"),
         ])
 def test_get_stock(code,start,end):
     stocks=get_stock(code,start,end)

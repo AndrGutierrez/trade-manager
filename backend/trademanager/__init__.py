@@ -6,6 +6,7 @@ from flask_cors import CORS
 from trademanager.database import db
 
 from trademanager.api import api_bp
+from flask_migrate import Migrate
 from trademanager.users import user_bp
 
 
@@ -24,6 +25,7 @@ def create_app(db_uri):
     myapp.config['CORS_HEADERS'] = 'Content-Type'
     myapp.register_blueprint(api_bp, url_prefix='/api')
     myapp.register_blueprint(user_bp, url_prefix='/api/auth')
+    migrate = Migrate(myapp, db)
     return myapp
 
 
