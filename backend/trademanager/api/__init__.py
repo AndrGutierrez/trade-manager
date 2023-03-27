@@ -15,11 +15,14 @@ API_KEY = os.environ.get("API_KEY")
 finnhub_client = finnhub.Client(api_key=API_KEY)
 data = finnhub_client.stock_symbols('US')
 
-@api_bp.route('/')
+@api_bp.route('/', methods=['GET'])
 def home():
     """Home route"""
     name = str(request.args.get("name")).upper()
-    res = [{ "value": company["symbol"], "label": company["description"]} for company in data if name in company["description"].upper()][:50]
+    res = [{ 
+            "value": company["symbol"], 
+            "label": company["description"]}
+    for company in data if name in company["description"].upper()][:50]
     return jsonify(res)
 
 @api_bp.route('/candlesticks')
@@ -27,7 +30,7 @@ def candlesticks():
     code = request.args.get('code')
     start = request.args.get('from')
     end = request.args.get('to')
-    stocks = get_stock(code, start, end)
+    stocks = jsonify(get_stock(code, start, end))
     return stocks
 
 
@@ -51,9 +54,9 @@ def filter_company():
 def register_company():
     """register company option in db"""
     code = request.form.get('code')
-    company = finnhub_client.company_profile2(symbol=code)
-    company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"])
     try:
+        company = finnhub_client.company_profile2(symbol=code)
+        company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"])
         db.session.add(company)
         db.session.commit()
         # response = Response("Company registered successfuly", status=200)
@@ -61,6 +64,10 @@ def register_company():
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         response = Response(error, status=400)
+    except KeyError as e:
+        error = str(e)
+        response = Response(error, status=404)
+    
 
     return response
 
@@ -75,7 +82,7 @@ def get_stock(code, start, end):
     res = finnhub_client.stock_candles(code, 'D', start, end)
 
     candles = []
-    if res['s'] == 'no_data': return Response('company not found', status=404)
+    if res['s'] == 'no_data': return [] 
 
     response_length = len(res['t'])
     for i in range(response_length):
@@ -90,6 +97,5 @@ def get_stock(code, start, end):
             res['c'][i],
         ]
         candles.append(candlestick)
-    candles = jsonify(candles)
 
     return candles
