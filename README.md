@@ -5,5 +5,5 @@ Stock trading manager made with flask and react
 
 `docker compose up --build`
 
-### TODO:
+## TODO:
 Add menu and user authentication

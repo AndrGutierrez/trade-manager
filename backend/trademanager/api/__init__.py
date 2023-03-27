@@ -8,13 +8,11 @@ from trademanager.models import Company
 import dateutil.parser as dp
 import os
 import finnhub
+
 api_bp = Blueprint('api_bp', __name__)
-
-
-
+load_dotenv()
 API_KEY = os.environ.get("API_KEY")
 finnhub_client = finnhub.Client(api_key=API_KEY)
-load_dotenv()
 data = finnhub_client.stock_symbols('US')
 
 @api_bp.route('/')
