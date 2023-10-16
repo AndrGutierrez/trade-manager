@@ -37,8 +37,13 @@ def candlesticks():
 @api_bp.route('/portfolio')
 def get_portfolio():
     registered_companies = Company.query.all()
-    registered_companies = [i.as_dict() for i in registered_companies]
-    registered_companies = jsonify(registered_companies)
+    try:
+        db.session.commit()
+        registered_companies = [i.as_dict() for i in registered_companies]
+        registered_companies = jsonify(registered_companies)
+    except:
+        db.session.rollback()
+        registered_companies= Response("Error getting portfolio", status=400)
 
     return registered_companies
 

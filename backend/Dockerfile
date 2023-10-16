@@ -4,7 +4,9 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
 EXPOSE 5000
-RUN chmod +x entry-point.sh
 
-ENTRYPOINT ["./entry-point.sh"]
+CMD ["flask", "db", "revision", "--rev-id", "ea5895751fcf"]
+CMD ["flask", "db", "stamp", "head"]
+CMD ["flask", "db", "migrate"]
+CMD ["flask", "db", "upgrade"]
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "wsgi:app"]
