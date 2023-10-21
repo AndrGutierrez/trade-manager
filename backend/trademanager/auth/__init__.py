@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response
 from .models.User import User
 auth_bp = Blueprint('auth_bp', __name__)
 from trademanager.database import db
@@ -6,20 +6,26 @@ from trademanager.database import db
 @auth_bp.route('/register', methods=["GET", "POST"])
 def register():
 
-    email = str(request.args.get("email")).upper()
-    password = str(request.args.get("password"))
-    passwordConfirmation = str(request.args.get("passwordConfirmation"))
+    email = str(request.form.get('email'))
+    password = str(request.form.get('password'))
+    passwordConfirmation = str(request.form.get('passwordConfirmation'))
+    message="User created Successfully"
 
-    user=User(email=email, password=password)
+    response = Response(message, status=200, mimetype="application/json")
     if password != passwordConfirmation:
-        return jsonify({"message": "Password and Password Confirmation must be equal"})
+        response = Response("Passwords don't match", status=400, mimetype="application/json")
     else:
-        db.session.add(user)
-        db.session.commit()
+        try:
+            user=User(email=email, password=password)
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e: 
+            response = Response("User Already exists", status=400, mimetype="application/json")
+            pass 
 
 
 
-    return jsonify({"message": "Register"})
+    return response
 
 @auth_bp.route('/logout', methods=["GET", "POST"])
 def logout():
