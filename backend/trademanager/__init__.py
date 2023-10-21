@@ -7,9 +7,10 @@ from trademanager.database import db
 
 from trademanager.api import api_bp
 from flask_migrate import Migrate
-from trademanager.users import user_bp
+from trademanager.auth import auth_bp
 
 
+from flask_login import LoginManager
 def create_app(db_uri):
     '''Application config'''
     myapp = Flask(__name__)
@@ -24,8 +25,10 @@ def create_app(db_uri):
 
     myapp.config['CORS_HEADERS'] = 'Content-Type'
     myapp.register_blueprint(api_bp, url_prefix='/api')
-    myapp.register_blueprint(user_bp, url_prefix='/api/auth')
+    myapp.register_blueprint(auth_bp, url_prefix='/api/auth')
     migrate = Migrate(myapp, db)
+    login_manager = LoginManager()
+    login_manager.init_app(myapp)
     return myapp
 
 
