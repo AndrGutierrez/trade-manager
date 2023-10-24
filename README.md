@@ -10,6 +10,8 @@ DATABASE_PASSWORD=
 DATABASE_NAME=trademanager
 DATABASE_USER=root
 DATABASE_HOST=db
+SECRET_KEY=
+
 REACT_APP_API_PATH=http://localhost:80/api
 # docker env variables
 MYSQL_DATABASE=trademanager

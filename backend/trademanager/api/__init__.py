@@ -4,7 +4,7 @@ from flask import jsonify, request
 from flask.wrappers import Response
 from sqlalchemy.exc import SQLAlchemyError
 from trademanager.database import db
-from trademanager.models import Company
+from trademanager.models.Company import Company
 import dateutil.parser as dp
 import os
 import finnhub
@@ -67,7 +67,7 @@ def register_company():
         # response = Response("Company registered successfuly", status=200)
         response =company.serialize 
     except SQLAlchemyError as e:
-        error = str(e.__dict__['orig'])
+        error =e.__str__() 
         response = Response(error, status=400)
     except KeyError as e:
         error = str(e)

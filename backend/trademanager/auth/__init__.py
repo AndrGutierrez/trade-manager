@@ -1,7 +1,15 @@
 from flask import Blueprint, jsonify, request, Response
-from .models.User import User
+from flask_login import login_required, login_user, logout_user
+from trademanager.models.User import User
 auth_bp = Blueprint('auth_bp', __name__)
 from trademanager.database import db
+from werkzeug.security import generate_password_hash, check_password_hash
+from trademanager.login_manager import login_manager
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.query(User).get(user_id) 
 
 @auth_bp.route('/register', methods=["GET", "POST"])
 def register():
@@ -17,9 +25,9 @@ def register():
     else:
         try:
             user=User(email=email, password=password)
-            db.session.add(user)
-            db.session.commit()
+            user.signup()
         except Exception as e: 
+            print(e)
             response = Response("User Already exists", status=400, mimetype="application/json")
             pass 
 
@@ -27,10 +35,25 @@ def register():
 
     return response
 
-@auth_bp.route('/logout', methods=["GET", "POST"])
+@auth_bp.route('/logout', methods=["GET"])
+@login_required
 def logout():
-    return jsonify({"message": "Logout"})
+    logout_user()
+    response = Response("Logout", status=200, mimetype="application/json")
+    return response
 
 @auth_bp.route('/login', methods=["GET", "POST"])
 def login():
-    return jsonify({"message": "login"})
+    email = request.form.get('email')
+    password = request.form.get('password')
+    user = db.session.query(User).filter_by(email=email).first()
+    right_password =user.check_password(password)
+    message=f"User {email} logged in"
+    response = Response(message, status=200, mimetype="application/json")
+    if right_password:
+        login_user(user)
+    else:
+        response = Response("Password or email don't match", status=200, mimetype="application/json")
+
+    return response
+

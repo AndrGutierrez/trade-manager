@@ -1,3 +1,4 @@
+from sqlalchemy.orm import relationship
 from trademanager.database import db
 
 Column = db.Column
@@ -9,7 +10,8 @@ class Company(db.Model):
     value = Column(db.String(5), unique=True, nullable=False)
     logo = Column(db.String(1023), nullable=False)
     weburl = Column(db.String(255), nullable=False)
-    
+    portfolio_id = Column(db.Integer, db.ForeignKey('portfolio.id'))
+    portfolio = relationship("Portfolio", back_populates="company")
 
     def __init__(self, label:str, value:str, logo:str, weburl:str):
         self.label = label
