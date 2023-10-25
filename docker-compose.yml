@@ -40,23 +40,23 @@ services:
     build: 
       context: "./nginx"
       dockerfile: Dockerfile
-    ports: 
-      - "80:80"
+    # ports: 
+    #   - "80:80"
     links: 
       - app
       - frontend
       - nginx-proxy
       - letsencrypt
     environment:
-      - VIRTUAL_HOST= domain.xyz, www.domain.xyz
-      - LETSENCRYPT_HOST= domain.xyz, www.domain.xyz
+      - VIRTUAL_HOST= domain.xyz, www.domain.xyz, localhost
+      - LETSENCRYPT_HOST= domain.xyz, www.domain.xyz, localhost
     restart: always
   nginx-proxy:
     image: jwilder/nginx-proxy
     restart: always
-    ports:
-      - "80:80"
-      - "443:443"
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - certs:/etc/nginx/certs:ro

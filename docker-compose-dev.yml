@@ -30,11 +30,15 @@ services:
     restart: always
     build:
       context: frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     environment:
       - REACT_APP_API_PATH=${REACT_APP_API_PATH}
+    #HOT RELOADING, DEV ONLY
+    stdin_open: true
+    volumes:
+      - ./frontend:/app:delegated
   nginx:
     container_name: nginx
     build: 
