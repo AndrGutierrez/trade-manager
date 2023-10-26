@@ -5,8 +5,8 @@ WORKDIR /app
 # Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
 ENV REACT_APP_API_PATH /api
 ENV WATCHPACK_POLLING true
-RUN npm install 
 COPY . .
+RUN npm install 
 
 expose 3000
 CMD ["npm", "start"]
