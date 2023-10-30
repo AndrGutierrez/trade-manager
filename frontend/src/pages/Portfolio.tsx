@@ -26,7 +26,7 @@ export default function Portfolio() {
     if (Object.keys(portfolio).length !== 0) setPortfolioHasItems(true);
   }, [portfolio]);
 
-  const submit: MouseEventHandler = () =>
+  const submit = () =>
     dispatch(updatePortfolio(selectedOption));
 
   const handleChange = (
