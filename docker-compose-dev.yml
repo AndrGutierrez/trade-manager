@@ -17,7 +17,7 @@ services:
     container_name: app
     build: 
       context: backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     restart: always
     ports:
       - "5000:5000"
@@ -25,6 +25,8 @@ services:
       - .env
     links:
       - db
+    volumes:
+      - './backend:/app'
   frontend:
     container_name: frontend
     restart: always

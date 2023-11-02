@@ -1,5 +1,5 @@
 import React, { useState, useEffect, MouseEventHandler } from "react";
-import { AppDispatch, RootState } from "../store";
+import { AppDispatch, RootState } from "store";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncSelect from "react-select/async";
 import Button from "components/utils/Button";

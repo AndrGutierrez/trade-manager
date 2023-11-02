@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
-import { portfolio, candlesticks, filters } from "slices";
+import { portfolio, candlesticks, filters, auth } from "slices";
 
 const reducer = combineReducers({
-  portfolio,
-  candlesticks,
-  filters,
+	portfolio,
+	candlesticks,
+	filters,
+	auth
 });
 
 const store = configureStore({

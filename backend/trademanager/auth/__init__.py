@@ -46,14 +46,19 @@ def logout():
 def login():
     email = request.form.get('email')
     password = request.form.get('password')
-    user = db.session.query(User).filter_by(email=email).first()
-    right_password =user.check_password(password)
-    message=f"User {email} logged in"
-    response = Response(message, status=200, mimetype="application/json")
-    if right_password:
-        login_user(user)
-    else:
-        response = Response("Password or email don't match", status=200, mimetype="application/json")
+    try:
+        user = db.session.query(User).filter_by(email=email).first()
+        right_password =user.check_password(password)
+        message=f"User {email} logged in"
+        response = Response(message, status=200, mimetype="application/json")
+        if right_password:
+            login_user(user)
+        else:
+            response = Response("Password or email don't match", status=403, mimetype="application/json")
+    except Exception as e:
+            print("#######")
+            print(e.__str__())
+            response = Response("User doesn't exist", status=403, mimetype="application/json")
 
     return response
 
