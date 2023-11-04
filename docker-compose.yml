@@ -4,9 +4,9 @@ services:
     image: mysql:latest
     container_name: db
     ports: 
-      - "3307:3306"
+      - "3305:3306"
     expose:
-      - "3307"
+      - "3305"
         # DATABASE_HOST ENV VARIABLE MUST BE "db"
     env_file:
       - .env
@@ -54,16 +54,17 @@ services:
   nginx-proxy:
     image: jwilder/nginx-proxy
     restart: always
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - certs:/etc/nginx/certs:ro
       - vhostd:/etc/nginx/vhsost.d 
       - html:/usr/share/nginx/html
-    labels:
-      - com.github.jrcs.letsncrypt_nginx_proxy_compaion.nginx_proxy
+    # labels:
+    #   - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     restart: always
