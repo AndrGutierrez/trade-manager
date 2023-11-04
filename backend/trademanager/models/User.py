@@ -12,14 +12,16 @@ class User(UserMixin, db.Model):
     __tablename__ = 'user'
 
     id=db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(255), unique=True)
-    password = db.Column(db.String(255))
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     portfolio = relationship("Portfolio", back_populates="user")
 
-    def __init__(self, email, password):
+    def __init__(self, email, password, username):
         super(User, self).__init__()
         self.email=email
         self.password=password
+        self.username=username
 
     def signup(self):
         self.password=generate_password_hash(self.password, method='sha256')

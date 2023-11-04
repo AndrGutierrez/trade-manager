@@ -5,15 +5,18 @@ import Button from 'components/utils/Button';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from "store";
 import { loginRequest } from 'slices/auth';
+import { useNavigate } from 'react-router';
 
 export default function App() {
 	const { register, handleSubmit, formState: { errors } } = useForm();
 	const dispatch = useDispatch<AppDispatch>();
+	const navigate= useNavigate()
 	
 	
 	// const onSubmit = handleSubmit((data) => dispatch(loginRequest(data)));
-	const onSubmit = handleSubmit((data) => {
-		dispatch(loginRequest(data));
+	const onSubmit = handleSubmit(async (data) => {
+		await dispatch(loginRequest(data));
+		navigate("/portfolio")
 	});
 
 	return (

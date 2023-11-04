@@ -7,7 +7,7 @@ services:
       - "3307:3306"
     expose:
       - "3307"
-        # DATABASE_HOST ENV VARIABLE MUST BE "DB"
+        # DATABASE_HOST ENV VARIABLE MUST BE "db"
     env_file:
       - .env
     volumes:
