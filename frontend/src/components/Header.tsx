@@ -16,6 +16,10 @@ export default function Header() {
           {" "}
           Portfolio{" "}
         </Link>
+        <Link to="/login" className={textStyle}>
+          {" "}
+          Login{" "}
+        </Link>
       </div>
       <div className="w-1/3"></div>
     </header>

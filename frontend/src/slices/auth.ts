@@ -12,10 +12,13 @@ export const loginRequest = createAsyncThunk("auth/login", async (data: Object) 
 		form.append(key, value);
 	})
 	const response = await axios.post(PATH, form);
-	console.log(response.data)
 	return response.data;
 });
 
+export const getLogin = createAsyncThunk("auth/login", async () => {
+	const response = await axios.get(PATH, {withCredentials: true});
+	return response.data;
+});
 const authSlice = createSlice({ 
 	name: "auth",
 	initialState: {
@@ -26,6 +29,7 @@ const authSlice = createSlice({
 	},
 	extraReducers: {
 		[loginRequest.fulfilled.toString()]: (state, { payload }) => payload,
+		[getLogin.fulfilled.toString()]: (state, { payload }) => payload,
 	}
 });
 export const {login} = authSlice.actions;

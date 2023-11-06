@@ -29,3 +29,6 @@ class User(UserMixin, db.Model):
         db.session.commit()
     def check_password(self, password):
         return check_password_hash(self.password, password) 
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

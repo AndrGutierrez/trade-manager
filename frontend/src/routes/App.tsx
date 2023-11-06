@@ -7,11 +7,13 @@ import { getPortfolio } from "slices/portfolio";
 import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
 import Login from "pages/Login";
+import { getLogin } from "slices/auth";
 
 export default function App() {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(getPortfolio());
+    dispatch(getLogin());
   }, []);
   return (
     <BrowserRouter>

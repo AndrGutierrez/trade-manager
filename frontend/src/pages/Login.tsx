@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import Input from 'components/utils/Input';
 import Button from 'components/utils/Button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from "store";
 import { loginRequest } from 'slices/auth';
 import { useNavigate } from 'react-router';
@@ -11,13 +11,18 @@ export default function App() {
 	const { register, handleSubmit, formState: { errors } } = useForm();
 	const dispatch = useDispatch<AppDispatch>();
 	const navigate= useNavigate()
+	const login = useSelector((state: any) => state.auth);
 	
 	
 	// const onSubmit = handleSubmit((data) => dispatch(loginRequest(data)));
 	const onSubmit = handleSubmit(async (data) => {
 		await dispatch(loginRequest(data));
-		navigate("/portfolio")
 	});
+	useEffect(() => {
+		console.log(login)
+		// navigate("/portfolio")
+
+	}, [login]);
 
 	return (
 		<div className="w-full flex justify-center p-3">

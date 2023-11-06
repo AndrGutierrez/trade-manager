@@ -1,6 +1,7 @@
+from flask.json import JSONEncoder
 from . import auth_bp
-from flask import request, Response
-from flask_login import login_required, login_user, logout_user
+from flask import jsonify, request, Response
+from flask_login import current_user, login_required, login_user, logout_user
 from trademanager.models.User import User
 from trademanager.database import db
 from trademanager.login_manager import login_manager
@@ -44,6 +45,19 @@ def logout():
 
 @auth_bp.route('/login', methods=["GET", "POST"])
 def login():
+    if request.method == "GET":
+        try:
+            user=current_user.__dict__
+            user={
+                "id": user["id"],
+                "email": user["email"],
+                "username": user["username"],
+            }
+
+            return user, 200
+        except Exception as e:
+            return Response("User not logged in", status=403, mimetype="application/json")
+
     email = request.form.get('email')
     password = request.form.get('password')
     try:
@@ -53,6 +67,7 @@ def login():
         response = Response(message, status=200, mimetype="application/json")
         if right_password:
             login_user(user)
+            return user.as_dict(), 200
         else:
             response = Response("Password or email don't match", status=403, mimetype="application/json")
     except Exception as e:
@@ -61,5 +76,3 @@ def login():
             response = Response("User doesn't exist", status=403, mimetype="application/json")
 
     return response
-
-
