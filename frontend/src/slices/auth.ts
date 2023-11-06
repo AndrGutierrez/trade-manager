@@ -6,14 +6,6 @@ type loginProps={
 	password: string
 }
 const PATH = `${process.env.REACT_APP_API_PATH}/auth/login`;
-export const loginRequest = createAsyncThunk("auth/login", async (data: Object) => {
-	const form = new FormData();
-	Object.entries(data).forEach(([key, value]) => {
-		form.append(key, value);
-	})
-	const response = await axios.post(PATH, form);
-	return response.data;
-});
 
 export const getLogin = createAsyncThunk("auth/login", async () => {
 	const response = await axios.get(PATH, {withCredentials: true});
@@ -25,11 +17,10 @@ const authSlice = createSlice({
 		
 	},
 	reducers: {
-		login: (state) => Object(state),
+		login: (state,payload) => Object(payload),
 	},
 	extraReducers: {
-		[loginRequest.fulfilled.toString()]: (state, { payload }) => payload,
-		[getLogin.fulfilled.toString()]: (state, { payload }) => payload,
+		[getLogin.fulfilled.toString()]: (state, { payload }) => payload
 	}
 });
 export const {login} = authSlice.actions;
