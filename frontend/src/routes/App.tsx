@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import CandleSticks from "pages/CandleSticks";
 import Layout from "components/Layout";
 import Portfolio from "pages/Portfolio";
+import Login from "pages/Login";
+import Signup from "pages/Signup";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { getPortfolio } from "slices/portfolio";
 import { AppDispatch } from "store";
 import { useDispatch } from "react-redux";
-import Login from "pages/Login";
 import { getLogin } from "slices/auth";
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/" element={<CandleSticks />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Signup />} />
         </Routes>
       </Layout>
     </BrowserRouter>

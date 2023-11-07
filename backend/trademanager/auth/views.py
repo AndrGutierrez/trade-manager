@@ -27,8 +27,6 @@ def register():
             user=User(email=email, password=password, username=username)
             user.signup()
         except Exception as e: 
-            print("#######")
-            print(e)
             response = Response("User Already exists", status=400, mimetype="application/json")
             pass 
 
@@ -71,8 +69,6 @@ def login():
         else:
             response = Response("Password or email don't match", status=403, mimetype="application/json")
     except Exception as e:
-            print("#######")
-            print(e.__str__())
             response = Response("User doesn't exist", status=403, mimetype="application/json")
 
     return response
