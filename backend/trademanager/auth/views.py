@@ -3,6 +3,7 @@ from . import auth_bp
 from flask import jsonify, request, Response
 from flask_login import current_user, login_required, login_user, logout_user
 from trademanager.models.User import User
+from trademanager.models.Portfolio import Portfolio
 from trademanager.database import db
 from trademanager.login_manager import login_manager
 
@@ -26,6 +27,8 @@ def register():
         try:
             user=User(email=email, password=password, username=username)
             user.signup()
+            portfolio = Portfolio(user_id=user.id)
+
         except Exception as e: 
             response = Response("User Already exists", status=400, mimetype="application/json")
             pass 

@@ -5,9 +5,11 @@ from flask.wrappers import Response
 from sqlalchemy.exc import SQLAlchemyError
 from trademanager.database import db
 from trademanager.models.Company import Company
-import dateutil.parser as dp
+from trademanager.models.Portfolio import Portfolio
 import os
 import finnhub
+from .utils import get_stock
+from flask_login import login_required
 
 load_dotenv()
 API_KEY = os.environ.get("API_KEY")
@@ -36,10 +38,11 @@ def candlesticks():
     return stocks
 
 
-@api_bp.route('/portfolio')
-def get_portfolio():
-    registered_companies = Company.query.all()
+@api_bp.route('/user/portfolio/<int:userid>')
+def get_portfolio(userid):
     try:
+        portfolio= Portfolio.query.filter(Portfolio.user_id==userid).first()
+        registered_companies = Company.query.filter(Company.portfolio_id==portfolio.id)
         db.session.commit()
         registered_companies = [i.as_dict() for i in registered_companies]
         registered_companies = jsonify(registered_companies)
@@ -79,30 +82,3 @@ def register_company():
     return response
 
 
-def get_stock(code, start, end):
-    """Get stock candles data"""
-
-    formatDate = lambda date: dp.parse(date).strftime('%s')
-    start = formatDate(start)
-    end = formatDate(end)
-    # res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
-    res = finnhub_client.stock_candles(code, 'D', start, end)
-
-    candles = []
-    if res['s'] == 'no_data': return [] 
-
-    response_length = len(res['t'])
-    for i in range(response_length):
-        # convert javascript unix timestamp
-        date = res['t'][i] * 1000
-        candlestick = [
-            date,
-            # res['t'][i],
-            res['o'][i],
-            res['h'][i],
-            res['l'][i],
-            res['c'][i],
-        ]
-        candles.append(candlestick)
-
-    return candles

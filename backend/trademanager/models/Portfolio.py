@@ -8,3 +8,8 @@ class Portfolio(db.Model):
     user_id=Column(db.Integer, db.ForeignKey('user.id'))
     user= relationship("User", back_populates="portfolio")
     company = relationship("Company", back_populates="portfolio")
+    def __init__(self, user_id) -> None:
+        super().__init__()
+        self.user_id=user_id
+        db.session.add(self)
+        db.session.commit()
