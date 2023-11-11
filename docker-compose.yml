@@ -73,7 +73,7 @@ services:
     volumes:
       - certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - vhostd:/etc/nginx/vhsost.d 
+      - vhostd:/etc/nginx/vhost.d 
       - html:/usr/share/nginx/html
 
 volumes:
