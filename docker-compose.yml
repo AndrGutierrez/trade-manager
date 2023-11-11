@@ -48,8 +48,8 @@ services:
       - nginx-proxy
       - letsencrypt
     environment:
-      - VIRTUAL_HOST= domain.xyz, www.domain.xyz, localhost
-      - LETSENCRYPT_HOST= domain.xyz, www.domain.xyz, localhost
+      - VIRTUAL_HOST= andresgutierrez.me, www.andresgutierrez.me
+      - LETSENCRYPT_HOST= andresgutierrez.me, www.andresgutierrez.me
     restart: always
   nginx-proxy:
     image: jwilder/nginx-proxy
