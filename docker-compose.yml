@@ -62,8 +62,8 @@ services:
       - certs:/etc/nginx/certs:ro
       - vhostd:/etc/nginx/vhsost.d 
       - html:/usr/share/nginx/html
-    # labels:
-    #   - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
 
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -72,7 +72,7 @@ services:
       - NGINX_PROXY_CONTAINER=nginx-proxy
     volumes:
       - certs:/etc/nginx/certs:rw
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - vhostd:/etc/nginx/vhsost.d 
       - html:/usr/share/nginx/html
 
