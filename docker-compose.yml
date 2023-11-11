@@ -48,8 +48,8 @@ services:
       - nginx-proxy
       - letsencrypt
     environment:
-      - VIRTUAL_HOST= trademanager.andresgutierrez.me, www.trademanager.andresgutierrez.me
-      - LETSENCRYPT_HOST= trademanager.andresgutierrez.me, www.trademanager.andresgutierrez.me
+      - VIRTUAL_HOST=trademanager.andresgutierrez.me,www.trademanager.andresgutierrez.me
+      - LETSENCRYPT_HOST=trademanager.andresgutierrez.me,www.trademanager.andresgutierrez.me
     restart: always
   nginx-proxy:
     image: jwilder/nginx-proxy
