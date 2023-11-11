@@ -52,10 +52,10 @@ services:
       - ./certbot/www:/var/www/certbot
 
 
-    certbot:
-      image: certbot/certbot
-      container_name: certbot
-      volumes:
-        - ./certbot/conf:/etc/letsencrypt
-        - ./certbot/www:/var/www/certbot
-      command: certonly --webroot -w /var/www/certbot  --force-renewal --email andresgutierrezdev@gmail.com -d trademanager.andresgutierrez.me --agree-tos
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot  --force-renewal --email andresgutierrezdev@gmail.com -d trademanager.andresgutierrez.me --agree-tos
