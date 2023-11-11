@@ -46,7 +46,7 @@ services:
     container_name: nginx
     build: 
       context: "./nginx"
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports: 
       - "80:80"
     links: 
