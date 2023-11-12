@@ -13,7 +13,6 @@ import { getLogin } from "slices/auth";
 export default function App() {
 	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => {
-		dispatch(getPortfolio());
 		dispatch(getLogin());
 	}, []);
 	return (

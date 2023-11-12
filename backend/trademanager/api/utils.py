@@ -5,17 +5,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 API_KEY = os.environ.get("API_KEY")
-try:
-    finnhub_client = finnhub.Client(api_key=API_KEY)
-    data = finnhub_client.stock_symbols('US')
-except:
-    data=[]
+def get_finnhub_data():
+    try:
+        finnhub_client = finnhub.Client(api_key=API_KEY)
+        data = finnhub_client.stock_symbols('US')
+    except:
+        data=[]
+    return data
 def get_stock(code, start, end):
     """Get stock candles data"""
 
     formatDate = lambda date: dp.parse(date).strftime('%s')
     start = formatDate(start)
     end = formatDate(end)
+    finnhub_client = finnhub.Client(api_key=API_KEY)
     # res = finnhub_client.stock_candles(code, 'D', 1590988249, 1650672000)
     res = finnhub_client.stock_candles(code, 'D', start, end)
 

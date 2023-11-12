@@ -13,11 +13,12 @@ class Company(db.Model):
     portfolio_id = Column(db.Integer, db.ForeignKey('portfolio.id'))
     portfolio = relationship("Portfolio", back_populates="company")
 
-    def __init__(self, label:str, value:str, logo:str, weburl:str):
+    def __init__(self, label:str, value:str, logo:str, weburl:str, portfolio_id):
         self.label = label
         self.value = value
         self.logo = logo
         self.weburl = weburl
+        self.portfolio_id=portfolio_id
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

@@ -8,25 +8,27 @@ from trademanager.models.Company import Company
 from trademanager.models.Portfolio import Portfolio
 import os
 import finnhub
-from .utils import get_stock
+from .utils import get_stock, get_finnhub_data
 from flask_login import login_required
 
 load_dotenv()
 API_KEY = os.environ.get("API_KEY")
 try:
     finnhub_client = finnhub.Client(api_key=API_KEY)
-    data = finnhub_client.stock_symbols('US')
 except:
-    data=[]
+    pass
 
+data=get_finnhub_data()
 @api_bp.route('/', methods=['GET'])
 def home():
     """Home route"""
+    company_data=data
+    if (len(data)==0): company_data=get_finnhub_data()
     name = str(request.args.get("name")).upper()
     res = [{ 
             "value": company["symbol"], 
             "label": company["description"]}
-    for company in data if name in company["description"].upper()][:50]
+    for company in company_data if name in company["description"].upper()][:50]
     return jsonify(res)
 
 @api_bp.route('/candlesticks')
@@ -38,9 +40,10 @@ def candlesticks():
     return stocks
 
 
-@api_bp.route('/user/portfolio/<int:userid>')
-def get_portfolio(userid):
+@api_bp.route('/user/portfolio')
+def get_portfolio():
     try:
+        userid=request.args.get("user")
         portfolio= Portfolio.query.filter(Portfolio.user_id==userid).first()
         registered_companies = Company.query.filter(Company.portfolio_id==portfolio.id)
         db.session.commit()
@@ -64,9 +67,11 @@ def filter_company():
 def register_company():
     """register company option in db"""
     code = request.form.get('code')
+    user = request.form.get('user')
     try:
         company = finnhub_client.company_profile2(symbol=code)
-        company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"])
+        portfolio= Portfolio.query.filter(Portfolio.user_id==user).first()
+        company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"], portfolio_id=portfolio.id)
         db.session.add(company)
         db.session.commit()
         # response = Response("Company registered successfuly", status=200)

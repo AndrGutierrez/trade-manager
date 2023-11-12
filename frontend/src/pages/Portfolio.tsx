@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MouseEventHandler } from "react";
+import React, { useState, useEffect } from "react";
 import { AppDispatch, RootState } from "store";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncSelect from "react-select/async";
@@ -21,13 +21,14 @@ export default function Portfolio() {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const COMPANIES_PATH = `${process.env.REACT_APP_API_PATH}`;
   const dispatch = useDispatch<AppDispatch>();
+  const user=useSelector((state:RootState)=>state.auth)
 
   useEffect(() => {
     if (Object.keys(portfolio).length !== 0) setPortfolioHasItems(true);
   }, [portfolio]);
 
   const submit = () =>
-    dispatch(updatePortfolio(selectedOption));
+    dispatch(updatePortfolio({ code: selectedOption, user: user.id }));
 
   const handleChange = (
     inputValue: string

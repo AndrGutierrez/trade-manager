@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Header from "components/Header";
 import Footer from "components/Footer";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
+import { getPortfolio } from "slices/portfolio";
+import { AppDispatch } from "store";
 
 type LayoutProps={
   children:any
@@ -12,12 +14,17 @@ const objectIsEmpty = (obj: Object) => Object.keys(obj).length === 0 ? true : fa
 export default function Layout({ children }: LayoutProps) {
 	const login = useSelector((state: LoginProps) => state.auth);
 	const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+	const path = useLocation().pathname;
 	useEffect(()=>{
-		if (!objectIsEmpty(login)) {
-			console.log(login.status)
-			if(login.status===403) navigate("/login");
+		const authNotRequired: boolean = path !== "/login" && path!=="/register"
+		if (!objectIsEmpty(login) && authNotRequired) {
+			if(login.status===403) navigate("/register");
+      else{
+        dispatch(getPortfolio(String(login.id)));
+      }
 		}
-	}, [login])
+	}, [login, path])
 	return (
 		<>
 			<Header></Header>
