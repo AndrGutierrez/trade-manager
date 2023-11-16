@@ -8,15 +8,14 @@ type loginProps={
 const PATH = `${process.env.REACT_APP_API_PATH}/auth/login`;
 
 export const getLogin = createAsyncThunk("auth/login", async () => {
-	let response={data: {}, status:200}
+	let res
 	try {
-		response = await axios.get(PATH, {withCredentials: true});
+		res = await axios.get(PATH, {withCredentials: true});
 	}
-	catch (error) {
-		response.status=403
+	catch ({response}) {
+    res=response
+		
 	}
-	
-	return {...response.data, status: response.status};
 });
 const authSlice = createSlice({ 
 	name: "auth",

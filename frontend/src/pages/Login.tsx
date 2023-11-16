@@ -24,21 +24,26 @@ export default function App() {
 	const { register, handleSubmit, formState: { errors } } = useForm();
 	const dispatch = useDispatch<AppDispatch>();
 	const navigate= useNavigate()
-  const [error, setError] = useState(true)
+  const [error, setError] = useState("")
 	
 	// const onSubmit = handleSubmit((data) => dispatch(loginRequest(data)));
 	const onSubmit = handleSubmit(async (data) => {
-		const res = await loginRequest(data)
-		if(res.status ==200) {
-			dispatch(login(res.data));
-			navigate("/portfolio")
-		}
+		const res = await loginRequest(data) 
+      .then((res)=>{
+        if(res.status ==200) {
+          dispatch(login(res.data));
+          navigate("/portfolio")
+        }
+      })
+      .catch(({response})=>{
+        if(response.status==403) setError(response.data)
+      })
 	});
 
 	return (
 		<div className="w-full flex flex-col items-center p-3">
       <div className="w-full sm:w-1/2 md:w-2/5 lg:w-1/4 xl:w-1/5">
-        {error && <Alert type="error" />}
+        {error && <Alert type="error" text={error}/>}
           <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
             <Input placeholder='email' register={register} pattern={/^\S+@\S+$/i} required></Input>
             <Input placeholder='password' register={register} type="password" required></Input>

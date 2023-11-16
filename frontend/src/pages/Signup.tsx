@@ -1,12 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios"
 import { useForm } from 'react-hook-form';
 import Input from 'components/utils/Input';
 import Button from 'components/utils/Button';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from "store";
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
+import Alert from 'components/utils/Alert';
 
 export const signupRequest = async (data: Object) => {
 	const PATH = `${process.env.REACT_APP_API_PATH}/auth/register`;
@@ -21,14 +20,17 @@ export const signupRequest = async (data: Object) => {
 
 export default function App() {
 	const { register, handleSubmit, formState: { errors } } = useForm();
+  const  [error, setError] = useState("")
 	const navigate= useNavigate()
 	
 	
 	const onSubmit = handleSubmit(async (data) => {
-		const res = await signupRequest(data)
-		if(res.status ==200) {
-			navigate("/register/success")
-		}
+		const res = await signupRequest(data).then((res)=>{
+      if(res.status ==200) navigate("/register/success")
+    })
+    .catch(({response})=>{
+      if(response.status==400) setError(response.data)
+    })
 	});
 	return (
 		<div className="w-full flex flex-col sm:flex-row justify-center items-center p-3 min-h-">
@@ -46,14 +48,17 @@ export default function App() {
 					</h2>
 				</div>
 			</div>
-			<form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full sm:w-1/2 lg:w-1/3 xl:w-1/5" >
-				<Input placeholder='email' register={register} pattern={/^\S+@\S+$/i} required></Input>
-				<Input placeholder='username' register={register} required></Input>
-				<Input placeholder='password' register={register} type="password" required></Input>
-				<Input placeholder='passwordConfirmation' register={register} type="password" required label="Password Confirmation"></Input>
-				<Button action={()=>dispatchEvent(new Event("submit"))} name="Create account" type="submit"></Button>
-				<div className='w-full'> Already have an account? <Link to="/login" className="underline text-cyan-500">Login</Link></div>
-			</form>
+      <div className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/5">
+        {error && <Alert text={error} type="error"></Alert>}
+        <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full" >
+          <Input placeholder='email' register={register} pattern={/^\S+@\S+$/i} required></Input>
+          <Input placeholder='username' register={register} required></Input>
+          <Input placeholder='password' register={register} type="password" required></Input>
+          <Input placeholder='passwordConfirmation' register={register} type="password" required label="Password Confirmation"></Input>
+          <Button action={()=>dispatchEvent(new Event("submit"))} name="Create account" type="submit"></Button>
+          <div className='w-full'> Already have an account? <Link to="/login" className="underline text-cyan-500">Login</Link></div>
+        </form>
+      </div>
 		</div>
 	);
 }
