@@ -17,7 +17,7 @@ export default function Layout({ children }: LayoutProps) {
   const dispatch = useDispatch<AppDispatch>();
 	const path = useLocation().pathname;
 	useEffect(()=>{
-		const authNotRequired: boolean = path !== "/login" && path!=="/register"
+		const authNotRequired: boolean = path !== "/login" && path!=="/register" && path!=="/register/success"
 		if (!objectIsEmpty(login) && authNotRequired) {
 			if(login.status===403) navigate("/register");
       else{

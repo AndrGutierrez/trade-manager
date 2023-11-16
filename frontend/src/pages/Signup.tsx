@@ -21,15 +21,12 @@ export const signupRequest = async (data: Object) => {
 
 export default function App() {
 	const { register, handleSubmit, formState: { errors } } = useForm();
-	const dispatch = useDispatch<AppDispatch>();
 	const navigate= useNavigate()
 	
 	
-	// const onSubmit = handleSubmit((data) => dispatch(loginRequest(data)));
 	const onSubmit = handleSubmit(async (data) => {
 		const res = await signupRequest(data)
 		if(res.status ==200) {
-			// dispatch(login(res.data));
 			navigate("/register/success")
 		}
 	});

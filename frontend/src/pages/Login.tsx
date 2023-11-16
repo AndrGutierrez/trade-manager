@@ -29,7 +29,6 @@ export default function App() {
 	const onSubmit = handleSubmit(async (data) => {
 		const res = await loginRequest(data)
 		if(res.status ==200) {
-			console.log("a")
 			dispatch(login(res.data));
 			navigate("/portfolio")
 		}
@@ -37,18 +36,6 @@ export default function App() {
 	return (
 		<div className="w-full flex justify-center p-3">
 				<form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
-			{
-				/*
-      <input type="text" placeholder="First name" {...register("First name", {required: true, maxLength: 80})} />
-      <input type="text" placeholder="Last name" {...register("Last name", {required: true, maxLength: 100})} />
-      <input type="text" placeholder="Email" {...register("Email", {required: true, pattern: /^\S+@\S+$/i})} />
-      <input type="tel" placeholder="Mobile number" {...register("Mobile number", {required: true, minLength: 6, maxLength: 12})} />
-
-      <input {...register("Developer", { required: true })} type="radio" value="Yes" />
-      <input {...register("Developer", { required: true })} type="radio" value="No" />
-				* */
-			}
-
 				<Input placeholder='email' register={register} pattern={/^\S+@\S+$/i} required></Input>
 				<Input placeholder='password' register={register} type="password" required></Input>
 				<Button action={()=>dispatchEvent(new Event("submit"))} name="Login" type="submit"></Button>

@@ -9,6 +9,7 @@ import { getPortfolio } from "slices/portfolio";
 import { AppDispatch } from "store";
 import { useDispatch, useSelector } from "react-redux";
 import { getLogin } from "slices/auth";
+import RegisterSuccess from "pages/RegisterSuccess";
 
 export default function App() {
 	const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +24,7 @@ export default function App() {
 			  <Route path="/portfolio" element={<Portfolio />} />
 			  <Route path="/login" element={<Login />} />
 			  <Route path="/register" element={<Signup />} />
+			  <Route path="/register/success" element={<RegisterSuccess />} />
 			</Routes>
 		  </Layout>
 		</BrowserRouter>
