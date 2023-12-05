@@ -7,7 +7,7 @@ Column = db.Column
 class Company(db.Model):
     id = Column(db.Integer, primary_key=True)
     label = Column(db.String(255), nullable=False)
-    value = Column(db.String(5), unique=True, nullable=False)
+    value = Column(db.String(6), unique=False, nullable=False)
     logo = Column(db.String(1023), nullable=False)
     weburl = Column(db.String(255), nullable=False)
     portfolio_id = Column(db.Integer, db.ForeignKey('portfolio.id'))

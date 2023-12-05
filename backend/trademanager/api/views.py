@@ -71,6 +71,10 @@ def register_company():
     try:
         company = finnhub_client.company_profile2(symbol=code)
         portfolio= Portfolio.query.filter(Portfolio.user_id==user).first()
+        print("#####")
+        print(portfolio)
+        print("#####")
+
         company = Company(label=company['name'], value=company["ticker"], logo=company["logo"], weburl=company["weburl"], portfolio_id=portfolio.id)
         db.session.add(company)
         db.session.commit()

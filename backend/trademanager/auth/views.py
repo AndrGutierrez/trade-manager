@@ -31,6 +31,7 @@ def register():
 
         except Exception as e: 
             response = Response("User Already exists", status=400, mimetype="application/json")
+            # response = Response(e.__str__(), status=400, mimetype="application/json")
             pass 
 
 
