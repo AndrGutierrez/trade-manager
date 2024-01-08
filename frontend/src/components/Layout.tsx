@@ -21,6 +21,7 @@ export default function Layout({ children }: LayoutProps) {
 		if (!objectIsEmpty(login) && authNotRequired) {
 			if(login.status===403) navigate("/register");
       else{
+        console.log(login)
         dispatch(getPortfolio(String(login.id)));
       }
 		}

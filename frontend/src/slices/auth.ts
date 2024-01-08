@@ -21,6 +21,7 @@ const authSlice = createSlice({
 	name: "auth",
 	initialState: {
 		id: 0,
+    status: 403
 	},
 	reducers: {
 		login: (state,{payload}) => Object(payload),
