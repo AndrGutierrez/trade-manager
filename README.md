@@ -24,6 +24,8 @@ API_KEY=
 
 `docker compose up --build`
 
+## DB Troubleshooting
+If there is any Issue with database migrations, try deleting  `alembic_version` table in the database
 
 ## TODO:
 Add menu and user authentication
