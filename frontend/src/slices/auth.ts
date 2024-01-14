@@ -21,8 +21,8 @@ export const getLogin = createAsyncThunk("auth/login", async () => {
 const authSlice = createSlice({ 
 	name: "auth",
 	initialState: {
-		id: 0,
-    status: 403
+		id: null,
+    status: 200
 	},
 	reducers: {
 		login: (state,{payload}) => Object(payload),

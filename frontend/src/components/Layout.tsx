@@ -17,14 +17,14 @@ export default function Layout({ children }: LayoutProps) {
   const dispatch = useDispatch<AppDispatch>();
 	const path = useLocation().pathname;
 	useEffect(()=>{
-		const authNotRequired: boolean = path !== "/login" && path!=="/register" && path!=="/register/success"
-		if (!objectIsEmpty(login) && authNotRequired) {
-			if(login.status===403) navigate("/register");
+		const authRequired: boolean = path !== "/login" && path!=="/register" && path!=="/register/success"
+		if (authRequired && login.id == 0) {
+			navigate("/register");
+		}
       else{
         console.log(login)
         dispatch(getPortfolio(String(login.id)));
       }
-		}
 	}, [login, path])
 	return (
 		<>

@@ -58,7 +58,7 @@ def login():
 
             return user, 200
         except Exception as e:
-            return Response({id: 0}, status=403, mimetype="application/json")
+            return {"id": 0}, 403 
 
     email = request.form.get('email')
     password = request.form.get('password')
