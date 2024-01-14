@@ -36,6 +36,7 @@ export default function CandleSticks() {
           to: filters.dateRange.to,
         },
       };
+      console.log(filters)
       dispatch(setFilters(filters));
       dispatch(getCandleSticks(config));
     }
